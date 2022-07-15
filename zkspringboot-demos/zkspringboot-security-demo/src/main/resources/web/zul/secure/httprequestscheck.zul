@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+    <style>
+    .z-textbox.infobox {
+        border: none;
+        min-height: 400px;
+        font-family: consolas, courier;
+    }
+    </style>
+    <window id="info" title="ZK Session Info" onCreate="showInfoGrid()" height="100%" onClientInfo="fillClientInfo(event)">
+        <zscript><![CDATA[
+    import javax.servlet.http.HttpSession;
+    import javax.servlet.ServletContext;
+    import javax.servlet.ServletRequest;
+    import javax.servlet.http.HttpServletRequest;
+    import java.util.Enumeration;
+    import org.zkoss.zk.ui.event.ClientInfoEvent;
+	import org.zkoss.zul.impl.XulElement;
+    
+	StringBuilder clientInfo = new StringBuilder();
+	public void fillClientInfo(Event event) {
+		ClientInfoEvent cie = (ClientInfoEvent) event;
+		clientInfo.append("ZK ClientInfo: \r");
+		clientInfo.append("getScreenWidth():\t\t").append(cie.getScreenWidth()).append(" x ")
+		        .append(cie.getScreenHeight()).append("\r");
+		clientInfo.append("getColorDepth():\t\t").append(cie.getColorDepth()).append("bit\r");
+		clientInfo.append("getDesktopWidth():\t\t").append(cie.getDesktopWidth()).append(" x ")
+		        .append(cie.getDesktopHeight()).append("\r");
+		clientInfo.append("getTimeZone():\t\t\t").append(cie.getTimeZone().getDisplayName()).append("\r");
+		clientInfo.append("getName():\t\t\t").append(cie.getName()).append("\r");
+		clientInfo
+		        .append("--------------------------------------------------------------------------------------------------\r");
+	}
+	public void showInfo() {
+		StringBuilder result = new StringBuilder();
+
+		try {
+			result.append("--------------------------------------------------------------\r");
+			result.append("ZK Session\r");
+			Session sess = Sessions.getCurrent();
+			result.append(".getLocalAddr():\t\t" + sess.getLocalAddr() + "\r");
+			result.append(".getLocalName():\t\t" + sess.getLocalName() + "\r");
+			result.append(".getRemoteAddr():\t\t" + sess.getRemoteAddr() + "\r");
+			result.append(".getRemoteHost():\t\t" + sess.getRemoteHost() + "\r");
+			result.append(".getServerName():\t\t" + sess.getServerName() + "\r");
+			result.append(".getWebApp().getAppName():\t" + sess.getWebApp().getAppName() + "\r");
+
+			HttpSession hses = (HttpSession) sess.getNativeSession();
+			result.append("--------------------------------------------------------------------------------------------------\r");
+			result.append("HttpSession\r");
+			result.append(".getId():\t\t\t" + hses.getId() + "\r");
+			result.append(".getCreationTime():\t\t" + new Date(hses.getCreationTime()).toString() + "\r");
+			result.append(".getLastAccessedTime():\t\t" + new Date(hses.getLastAccessedTime()).toString() + "\r");
+			Enumeration en = hses.getAttributeNames();
+			while (en.hasMoreElements()) {
+			    String attributeName = "" + en.nextElement();
+			    result.append("- " + attributeName + ":\t\t" + hses.getAttribute(attributeName) + "\r");
+			}
+
+			result.append("--------------------------------------------------------------------------------------------------\r");
+			result.append("ServletContext\r");
+			ServletContext sCon = hses.getServletContext();
+			result.append(".getServerInfo():\t\t" + sCon.getServerInfo() + "\r");
+			result.append(".getContextPath():\t\t" + sCon.getContextPath() + "\r");
+			result.append(".getServletContextName():\t" + sCon.getServletContextName() + "\r");
+			
+			en = sCon.getAttributeNames();
+			while (en.hasMoreElements()) {
+			    String attributeName = "" + en.nextElement();
+			    result.append("- " + attributeName + ":\t\t" + sCon.getAttribute(attributeName) + "\r");
+			}
+
+			result.append("--------------------------------------------------------------------------------------------------\r");
+			result.append("ZK Executions\r");
+			Execution exec = Executions.getCurrent(); 
+			result.append(".getHeader('user-agent'):\t" + exec.getHeader("user-agent") + "\r");
+			result.append(".getHeader('accept-language'):\t" + exec.getHeader("accept-language")
+			        + "\r");
+			result.append(".getHeader('referer'):\t\t" + exec.getHeader("referer") + "\r");
+			result.append(".getHeader('connection'):\t" + exec.getHeader("connection") + "\r");
+			result.append(".getHeader('zk-sid'):\t\t" + exec.getHeader("zk-sid") + "\r");
+			result.append(".getHeader('origin'):\t\t" + exec.getHeader("origin") + "\r");
+			result.append(".getHeader('host'):\t\t" + exec.getHeader("host") + "\r");
+			result.append(".getHeader('cookie'):\t\t" + exec.getHeader("cookie") + "\r");
+			result.append("--------------------------------------------------------------------------------------------------\r");
+
+			if (exec.getNativeRequest() instanceof ServletRequest) {
+				result.append("Servlet Request\r");
+				result.append("*Attributes:\r");
+			    ServletRequest svRequest = (ServletRequest) exec.getNativeRequest();
+				en = svRequest.getAttributeNames();
+				while (en.hasMoreElements()) {
+				    String attributeName = "" + en.nextElement();
+				    result.append("- " + attributeName + ":\t\t" + svRequest.getAttribute(attributeName) + "\r");
+				}
+
+				result.append("*Parameters:\r");
+				en = svRequest.getParameterNames();
+				while (en.hasMoreElements()) {
+				    String paramName = "" + en.nextElement();
+				    result.append("- " + paramName + ":\t\t" + svRequest.getParameter(paramName) + "\r");
+				}
+				result.append("--------------------------------------------------------------------------------------------------\r");
+			}
+			
+			result.append(clientInfo);
+
+			sessionInfo.setText(result.toString());
+
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+	public void showInfoGrid() {
+		try {
+			addGroupRow("ZK Session");
+			Session sess = Sessions.getCurrent();
+			addContentRow(".getLocalAddr():", sess.getLocalAddr());
+			addContentRow(".getLocalName():", sess.getLocalName());
+			addContentRow(".getRemoteAddr():", sess.getRemoteAddr());
+			addContentRow(".getRemoteHost():", sess.getRemoteHost());
+			addContentRow(".getServerName():", sess.getServerName());
+			addContentRow(".getWebApp().getAppName():", sess.getWebApp().getAppName());
+
+			HttpSession hses = (HttpSession) sess.getNativeSession();
+			addGroupRow("HttpSession\r");
+			addContentRow(".getId():", hses.getId());
+			addContentRow(".getCreationTime():", new Date(hses.getCreationTime()).toString());
+			addContentRow(".getLastAccessedTime():", new Date(hses.getLastAccessedTime()).toString());
+			Enumeration en = hses.getAttributeNames();
+			while (en.hasMoreElements()) {
+			    String attributeName = "" + en.nextElement();
+			    addContentRow("- " + attributeName + ":", hses.getAttribute(attributeName));
+			}
+
+			addGroupRow("ServletContext\r");
+			ServletContext sCon = hses.getServletContext();
+			addContentRow(".getServerInfo():", sCon.getServerInfo());
+			addContentRow(".getContextPath():", sCon.getContextPath());
+			addContentRow(".getServletContextName():", sCon.getServletContextName());
+			
+			en = sCon.getAttributeNames();
+			while (en.hasMoreElements()) {
+			    String attributeName = "" + en.nextElement();
+			    addContentRow("- " + attributeName + ":", sCon.getAttribute(attributeName));
+			}
+
+			addGroupRow("ZK Executions\r");
+			Execution exec = Executions.getCurrent(); 
+			addContentRow(".getHeader('user-agent'):", exec.getHeader("user-agent"));
+			addContentRow(".getHeader('accept-language'):", exec.getHeader("accept-language")
+			       );
+			addContentRow(".getHeader('referer'):", exec.getHeader("referer"));
+			addContentRow(".getHeader('connection'):", exec.getHeader("connection"));
+			addContentRow(".getHeader('zk-sid'):", exec.getHeader("zk-sid"));
+			addContentRow(".getHeader('origin'):", exec.getHeader("origin"));
+			addContentRow(".getHeader('host'):", exec.getHeader("host"));
+			addContentRow(".getHeader('cookie'):", exec.getHeader("cookie"));
+			for (String headerName : exec.getHeaderNames()) {
+			    addIterableContentRow("- " + headerName + ":", exec.getHeaders(headerName));
+			}
+
+			if (exec.getNativeRequest() instanceof ServletRequest) {
+				addGroupRow("Servlet Request - Attributes:");
+			    ServletRequest svRequest = (ServletRequest) exec.getNativeRequest();
+				en = svRequest.getAttributeNames();
+				while (en.hasMoreElements()) {
+				    String attributeName = "" + en.nextElement();
+				    addContentRow("- " + attributeName + ":", svRequest.getAttribute(attributeName));
+				}
+				
+				if (exec.getNativeRequest() instanceof HttpServletRequest) {
+				    HttpServletRequest httpRequest = (HttpServletRequest) exec.getNativeRequest();
+					en = httpRequest.getHeaderNames();
+					while (en.hasMoreElements()) {
+					    String attributeName = "" + en.nextElement();
+					    addEnumerationContentRow("- " + attributeName + ":", httpRequest.getHeaders(attributeName) );
+					}   
+				}
+
+				addGroupRow("Servlet Request - Parameters:");
+				en = svRequest.getParameterNames();
+				while (en.hasMoreElements()) {
+				    String paramName = "" + en.nextElement();
+				    addContentRow("- " + paramName + ":", svRequest.getParameter(paramName));
+				}
+				
+			}
+			
+			addGroupRow("Server System Environment\r");
+			for (java.util.Map.Entry entry : System.getenv().entrySet()) {
+				addContentRow("- " + entry.getKey() + ":", entry.getValue());
+			}
+
+			addGroupRow("Server System Properties\r");
+			for (java.util.Map.Entry entry : System.getProperties().entrySet()) {
+				addContentRow("- " + entry.getKey() + ":", entry.getValue());
+			}
+			
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+	
+	private void addContentRow(String key, Object value) {
+	    Row row = new Row();
+		row.setParent(infoGrid.getRows());
+
+	    Label l = new Label(key);
+	    row.appendChild(l);
+	    
+	    l = new Label("" + value);
+	    row.appendChild(l);
+	}
+	
+	private void addIterableContentRow(String key, Iterable values) {
+	    Row row = new Row();
+		row.setParent(infoGrid.getRows());
+
+	    row.appendChild(new Label(key));
+
+	    StringBuffer sb = new StringBuffer();
+	    for (Object value : values) {
+	        if (sb.length() > 0) sb.append(", \n");
+	        sb.append("" + value);
+	    }
+	    row.appendChild(new Label(sb.toString()));
+	}
+	
+	private void addEnumerationContentRow(String key, Enumeration values) {
+	    Row row = new Row();
+		row.setParent(infoGrid.getRows());
+
+	    row.appendChild(new Label(key));
+
+	    StringBuffer sb = new StringBuffer();
+	    while (values.hasMoreElements()) {
+	        if (sb.length() > 0) sb.append(", \n");
+	        sb.append(values.nextElement());
+	    }
+	    row.appendChild(new Label(sb.toString()));
+	}
+	
+	private void addGroupRow(String labelText) {
+	    Group group = new Group(labelText);
+		infoGrid.getRows().appendChild(group);
+	}
+]]></zscript>
+		<vlayout vflex="true">
+			<grid id="infoGrid" vflex="true">
+				<columns sizable="true">
+					<column width="350px" label="Key" />
+					<column label="Value" />
+				</columns>
+				<rows />
+			</grid>
+			<!-- 
+	        <textbox id="sessionInfo" sclass="infobox" multiline="true" hflex="true" vflex="true" />
+			 -->
+		</vlayout>
+    </window>
+</zk>

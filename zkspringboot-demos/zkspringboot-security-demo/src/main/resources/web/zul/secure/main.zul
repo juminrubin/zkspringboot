@@ -1,6 +1,19 @@
 <zk>
+	<vlayout>
     <div>
     You should see this a secure page after a successful authentication.
     </div>
+    <div>
+    Another page is located <a href="/secure/another">here</a>.
+    </div>
+    <div>
+    <a href="/secure/fileupload">File Upload demo</a>.
+    </div>
+	<separator />    
+    <div>
+    <a href="/secure/httprequestscheck">HTTP Requests Check</a>.
+    </div>
+	<separator />    
     <a href="/logout">logout</a>
+	</vlayout>
 </zk>

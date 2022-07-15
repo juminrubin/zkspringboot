@@ -8,18 +8,28 @@
 	<artifactId>zkspringboot-security-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<zk.version>9.6.0-Eval</zk.version>
-		<zkspringboot.version>2.5.12</zkspringboot.version>
-		<springboot.version>2.5.12</springboot.version>
-		<zats.version>3.0.0</zats.version>
-		<junit.version>4.13.1</junit.version>
-	</properties>
+	
 	<description>a project to show spring security working with ZK based on https://spring.io/guides/gs/securing-web/
 	</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		
+		<zk.version>9.6.0-Eval</zk.version>
+		<zkspringboot.version>2.5.12</zkspringboot.version>
+		<zats.version>3.0.0</zats.version>
+		
+		<springboot.version>2.5.12</springboot.version>
+
+		<ssoauth2.version>2.6.6</ssoauth2.version>
+		
+		<fasterxml.jackson.version>2.13.3</fasterxml.jackson.version>
+
+		<junit.version>4.13.1</junit.version>
+	</properties>
+	
 	<repositories>
 		<repository>
 			<id>ZK EE</id>
@@ -30,6 +40,7 @@
 			<url>https://mavensync.zkoss.org/zk/ee-eval</url>
 		</repository>
 	</repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.zkoss.zkspringboot</groupId>
@@ -47,7 +58,26 @@
 			<artifactId>zkmax</artifactId>
 			<version>${zk.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.security.oauth.boot</groupId>
+			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
+			<version>${ssoauth2.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${fasterxml.jackson.version}</version>
+		</dependency>
+
 	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>

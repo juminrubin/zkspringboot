@@ -1,6 +1,11 @@
 <zk>
-    <div>
-    this is another page
-    </div>
-    <a href="/logout">logout</a>
+	<vlayout>
+		<div>This is another page</div>
+		<div>
+			Want to go back to main page? 
+			<a href="/secure/main">Click here</a>.
+		</div>
+		<separator />
+		<a href="/logout">logout</a>
+	</vlayout>
 </zk>

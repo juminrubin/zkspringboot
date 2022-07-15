@@ -4,3 +4,15 @@ target/
 .gradle/
 build/
 
+target/
+.settings/
+.settings/*
+.classpath
+.project
+.DS_Store
+.idea
+*.iml
+.vscode
+.logs
+
+keystore/*

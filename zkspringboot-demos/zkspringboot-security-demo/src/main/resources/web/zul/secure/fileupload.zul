@@ -1,0 +1,42 @@
+<zk>
+    <style src="~./zul/css/fileupload.css" />
+    <div xmlns:h="native" apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('org.zkoss.zkspringboot.security.vm.UserProfileViewModel')">
+        <div sclass="content">
+            <div sclass="photo">
+                <image id="img" content="@load(vm.photo)" width="100%" height="100%"/>
+            </div>
+            <dropupload maxsize="50" detection="browser" anchor="${img}"
+                content="Drag your photo here (max 50KB)"
+                onUpload="@command('doUploadPhoto', photo=event.media)"/>
+            <div sclass="personDetails">
+                <tablelayout columns="2">
+                    <tablechildren>Name:</tablechildren>    
+                    <tablechildren>Susan C.</tablechildren> 
+                    <tablechildren>Birth Date:</tablechildren>  
+                    <tablechildren>2000/12/25</tablechildren>   
+                    <tablechildren>E-mail:</tablechildren>  
+                    <tablechildren>susanc1225@gmail.com</tablechildren> 
+                    <tablechildren>Webpage:</tablechildren> 
+                    <tablechildren>susanc1225.wordpress.com</tablechildren> 
+                    <tablechildren>Status:</tablechildren>  
+                    <tablechildren>single</tablechildren>   
+                    <tablechildren>Nationality:</tablechildren> 
+                    <tablechildren>Canadian</tablechildren> 
+                </tablelayout>
+            </div>
+        </div>
+        <groupbox title="Attachments: " open="true" sclass="attachments">
+            <div id="target" sclass="dropzone" children="@load(vm.attachments)">
+                <template name="children" var="attachment">
+                    <span sclass="attachment">
+                        <a iconSclass="z-icon-paperclip" label="@load(attachment)"/>
+                    </span>
+                </template>
+            </div>
+            <dropupload maxsize="8096" detection="browser" anchor="${target}"
+                onUpload="@command('doUploadFiles', files=event.medias)"
+                content="Drag your files here (max. 8MB) multiple allowed"/>
+        </groupbox>
+    </div>
+</zk>
